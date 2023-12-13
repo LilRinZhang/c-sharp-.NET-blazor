@@ -1,0 +1,82 @@
+{
+  "format": 1,
+  "restore": {
+    "/workspaces/shigei_cho/C#_test/Blazor-Project/Blazor-Project.csproj": {}
+  },
+  "projects": {
+    "/workspaces/shigei_cho/C#_test/Blazor-Project/Blazor-Project.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/workspaces/shigei_cho/C#_test/Blazor-Project/Blazor-Project.csproj",
+        "projectName": "Blazor-Project",
+        "projectPath": "/workspaces/shigei_cho/C#_test/Blazor-Project/Blazor-Project.csproj",
+        "packagesPath": "/home/vscode/.nuget/packages/",
+        "outputPath": "/workspaces/shigei_cho/C#_test/Blazor-Project/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/vscode/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "CData.MySQL": {
+              "target": "Package",
+              "version": "[23.0.8565, )"
+            },
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.4.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[7.0.10, )"
+            },
+            "MySqlConnector": {
+              "target": "Package",
+              "version": "[2.2.7, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.412/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
