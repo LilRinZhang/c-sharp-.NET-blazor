@@ -1,0 +1,91 @@
+﻿@page "/"
+@using Blazor_Project.Models
+@using Blazor_Project.Data
+@using System.Windows
+@inject custMasterDetailSerivce CustomerService
+@* Customer一覧*@
+
+<PageTitle>Customer</PageTitle>
+
+<h1>Customer Details</h1>
+<table>
+    <tr style="height: 30px; background-color:#336699 ; color:#FFFFFF ;border: solid 1px #659EC7;">
+        <td colspan="5" align="left">
+            Search Customer
+        </td>
+    </tr>
+    <tr>
+        <td>Customer ID:</td>
+        <td>
+            <input class="input-group-text" type="number" @bind-value="@CustId" />
+        </td>
+        <td>Cust Name:</td>
+        <td>
+            <input class="input-group-text" type="text" @bind-value="@CustName" />
+        </td>
+        <td>
+            <input type="button" class="btn btn-primary" value="Search" @onclick="@searchDetails" />
+        </td>
+    </tr>
+</table>
+
+<hr />
+@if (custDetails == null)
+{
+    <p style="color:#f20a16"><em>Err : There is no such customer,Please check the inputed ID or Name!</em></p>
+}
+else
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Customer Id</th>
+            <th>Customer Name</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cuDetails in custDetails)
+            {
+                <tr>
+                    <td>@cuDetails.Id</td>
+                    <td>@cuDetails.Name</td>
+                    <td>@cuDetails.PhoneNumber</td>
+                    <td>@cuDetails.Email</td>
+                    <td><b><input style="background-color:#FF0000;" type="button" class="btn btn-primary" value="Delete"
+                            @onclick="() => delete(cuDetails.Id)" /></b></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    // 全件取得(検索)
+    String CustName = "";
+    String CustId = "";
+    Blazor_Project.Models.Customer[]? custDetails;
+    protected override async Task OnInitializedAsync()
+    {
+        custDetails = await Task.Run(() => CustomerService.GetCustDetails(CustId, CustName));
+    }
+
+    // 検索
+    private async Task searchDetails()
+    {
+        custDetails = await Task.Run(() => CustomerService.GetCustDetails(CustId, CustName));
+    }
+
+    // 削除
+    private async Task delete(int id)
+    {
+        CustomerService.DeleteCustomer(id);
+        String CustName = "";
+        String CustId = "";
+        custDetails = await Task.Run(() => CustomerService.GetCustDetails(CustId, CustName));
+    }
+}
+
+

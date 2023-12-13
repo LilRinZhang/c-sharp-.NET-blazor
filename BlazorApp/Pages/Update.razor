@@ -1,0 +1,176 @@
+﻿@page "/update"
+@using Blazor_Project.Models
+@using Blazor_Project.Data
+@using System.Windows
+@inject custMasterDetailSerivce CustomerService
+@* Customer Update*@
+
+<PageTitle>Customer Update</PageTitle>
+
+<h1>Customer Update</h1>
+<table>
+    <tr style="height: 30px; background-color:#336699 ; color:#FFFFFF ;border: solid 1px #659EC7;">
+        <td colspan="5" align="left">
+            Customer Select
+        </td>
+    </tr>
+    <tr>
+        <td>Please input the Customer ID :</td>
+        <td>
+            <input class="input-group-text" type="number" @bind-value="@CustId" />
+        </td>
+        <td>
+            <input type="button" class="btn btn-primary" value="Enter" @onclick="@searchDetails" />
+        </td>
+    </tr>
+</table>
+
+<hr />
+@if (searchDetail == null)
+{
+    if (shouldAlert)
+    {
+        <p style="color:#f20a16"><em>Err : There is no such customer ID,Please check the inputed ID</em></p>
+    }
+    else
+    {
+        <p><em>There is no selected customer</em></p>
+    }
+
+}
+else
+{
+    <tr style="height: 30px; background-color:#336699 ; color:#FFFFFF ;border: solid 1px #659EC7;">
+    <td colspan="5" align="left">
+        Customer Details Before
+    </td>
+</tr>
+    <table class="table">
+
+    <thead>
+        <tr>
+            <th>Customer Id</th>
+            <th>Customer Name</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@searchDetail.Id</td>
+            <td>@searchDetail.Name</td>
+            <td>@searchDetail.PhoneNumber</td>
+            <td>@searchDetail.Email</td>
+        </tr>
+    </tbody>
+</table>
+    <tr style="height: 30px; background-color:#336699 ; color:#FFFFFF ;border: solid 1px #659EC7;">
+        <td colspan="5" align="left">
+            Update Customer Details
+        </td>
+    </tr>
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input class="input-group-text" type="text" @bind-value="@UpdateName" /></td>
+                <td><input class="input-group-text" type="text" @bind-value="@UpdatePhoneNo" /></td>
+                <td><input class="input-group-text" type="text" @bind-value="@UpdateEmail" /></td>
+            </tr>
+        </tbody>
+        <hr />
+         @if(!hasUpdated){
+        <tr>
+            <input type="button" class="btn btn-primary" value="Update" @onclick="@update" />
+        </tr>
+         }
+        @if(shouldAlertForUpdate){
+        <tr>
+            <p style="color:#f20a16"><em>Err : There are colums which are not inputed! </em></p>
+        </tr>
+        }
+        @if(hasUpdated){
+        <tr>
+                            <p style="color:#0bf632"><em> Update Successfully! </em></p>
+        </tr>
+        <tr>
+            <input type="button" style="background-color:#0bf632" class="btn btn-primary" value="Done" @onclick="@clear" />
+        </tr>
+        }
+
+    </table>
+}
+
+
+
+@code {
+    int? CustId;
+    String UpdateName = "";
+    String UpdatePhoneNo = "";
+    String UpdateEmail = "";
+    Blazor_Project.Models.Customer? searchDetail;
+    Boolean shouldAlert = false;
+    Boolean shouldAlertForUpdate = false;
+    Boolean hasUpdated = false;
+
+    // 検索機能
+    private async Task searchDetails()
+    {
+        Blazor_Project.Models.Customer[]? items;
+        items = null;
+        if (CustId == null)
+        {
+            shouldAlert = true;
+            searchDetail = null;
+        }
+        else
+        {
+            items = await Task.Run(() => CustomerService.GetCustDetails(CustId.ToString(), ""));
+        }
+
+        if (items == null||items.Length ==0)
+        {
+            shouldAlert = true;
+            searchDetail = null;
+        }
+        else
+        {
+            searchDetail = items[0];
+        }
+    }
+
+    // 更新機能
+    private async Task update()
+    {
+        if (UpdateName == null || UpdatePhoneNo == null || UpdateEmail == null)
+        {
+            shouldAlertForUpdate = true;
+        }
+        else
+        {
+            CustomerService.UpdateCustomer(CustId.GetValueOrDefault(), UpdateName, UpdatePhoneNo, UpdateEmail);
+            hasUpdated = true;
+        }
+
+    }
+
+    // 初期化
+    private void clear()
+    {
+        searchDetail = null;
+        CustId = null;
+        UpdateName = "";
+        UpdatePhoneNo = "";
+        UpdateEmail = "";
+        shouldAlert = false;
+        shouldAlertForUpdate = false;
+        hasUpdated = false;
+    }
+}

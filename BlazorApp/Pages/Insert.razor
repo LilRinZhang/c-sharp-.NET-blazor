@@ -1,0 +1,132 @@
+@page "/insert"
+@using Blazor_Project.Models
+@using Blazor_Project.Data
+@using System.Windows
+@inject custMasterDetailSerivce CustomerService
+
+<h1>Customer Insert</h1>
+<table>
+    <tr style="height: 30px; background-color:#336699 ; color:#FFFFFF ;border: solid 1px #ecb8e1;">
+        <td colspan="15" align="left">
+            Insert
+        </td>
+    </tr>
+    <tr>
+        <td>Name:</td>
+        <td>
+            <input class="input-group-text" type="text" @bind-value="@InsertName" />
+        </td>
+        <td>PhoneNumber:</td>
+        <td>
+            <input class="input-group-text" type="text" @bind-value="@InsertPhoneNumber" />
+        </td>
+        <td>Email:</td>
+        <td>
+            <input class="input-group-text" type="text" @bind-value="@InsertEmail" />
+        </td>
+        <td>
+            <input type="button" class="btn btn-primary" value="Insert" @onclick="@insert" />
+        </td>
+    </tr>
+    @if (shouldAlert)
+    {
+        <tr style="height: 30px; background-color:#03c0fa ; color:#ffffff ;border: solid 1px #f6f1f5;">
+            <td colspan="3" align="left">
+                全項目を入力してください！
+            </td>
+        </tr>
+    }
+</table>
+
+
+<hr />
+@if (shouldConfirm)
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Customer Id</th>
+            <th>Customer Name</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cuDetails in custDetails)
+            {
+                <tr>
+                    <td>@cuDetails.Id</td>
+                    <td>@cuDetails.Name</td>
+                    <td>@cuDetails.PhoneNumber</td>
+                    <td>@cuDetails.Email</td>
+                </tr>
+            }
+        </tbody>
+        <tr style="height: 30px; background-color:#f8f9f8 ; color:#0bf632 ;">
+            <td colspan="15" align="left">
+                Customer has been updated successfully!
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input style="background-color:#0bf632 " type="button" class="btn btn-primary" value="Done"
+                @onclick="@done" />
+            </td>
+        </tr>
+    </table>
+}
+
+
+@code {
+
+
+    // 登録
+    int InsertId = 0;
+    String InsertName = "";
+    String InsertPhoneNumber = "";
+    String InsertEmail = "";
+    Boolean shouldAlert = false;
+    Boolean shouldConfirm = false;
+    Blazor_Project.Models.Customer[]? custDetails;
+    protected override async Task OnInitializedAsync()
+    {
+        custDetails = await Task.Run(() => CustomerService.GetCustDetails("", ""));
+    }
+
+    private async Task done()
+    {
+        shouldConfirm = false;
+        custDetails = await Task.Run(() => CustomerService.GetCustDetails("", ""));
+    }
+
+
+    private async Task insert()
+    {
+        // ID自動設定
+        if (custDetails == null)
+        {
+            InsertId = 1;
+        }
+        else
+        {
+            InsertId = custDetails.Length + 1;
+        }
+
+        if (InsertName == "" || InsertPhoneNumber == "" || InsertEmail == "")
+        {
+            shouldAlert = true;
+        }
+        else
+        {
+            CustomerService.InsertCustomer(InsertId, InsertName, InsertPhoneNumber, InsertEmail);
+            custDetails = await Task.Run(() => CustomerService.GetCustDetails(InsertId.ToString(), InsertName));
+            shouldConfirm = true;
+            shouldAlert = false;
+            InsertName = "";
+            InsertPhoneNumber = "";
+            InsertEmail = "";
+
+        }
+    }
+}
+
